@@ -156,12 +156,22 @@ func SearchAnime(q string, httpclient HTTPClient) (AnimeDetails, error) {
 	}
 
 	// put in util
-	re := regexp.MustCompile(`^(.*` + "hisoka" + `)`)
+	re := regexp.MustCompile(`^(.*[\/\\]hisoka[\/\\])`) // Match "hisoka" in the file path
 	cwd, _ := os.Getwd()
 	rootPath := re.Find([]byte(cwd))
-	errEnv := godotenv.Load(string(rootPath) + "/.env")
+
+	if rootPath == nil {
+		fmt.Println("No matching directory found")
+		return
+	}
+
+	rootDir := string(rootPath)
+	// Use filepath.Join to safely concatenate directory paths across different platforms
+	envPath := filepath.Join(rootDir, ".env")
+	errEnv := godotenv.Load(envPath)
 	if errEnv != nil {
-		return AnimeDetails{}, fmt.Errorf("failed to load environment variables: %s", errEnv)
+		fmt.Printf("Failed to load environment variables from %s: %s\n", envPath, errEnv)
+		return
 	}
 
 	jixenURL := os.Getenv("JIKAN_BASE_URL")
