@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"time"
 
@@ -161,8 +162,7 @@ func SearchAnime(q string, httpclient HTTPClient) (AnimeDetails, error) {
 	rootPath := re.Find([]byte(cwd))
 
 	if rootPath == nil {
-		fmt.Println("No matching directory found")
-		return
+		return AnimeDetails{}, fmt.Errorf("no matching directory found")
 	}
 
 	rootDir := string(rootPath)
@@ -170,8 +170,7 @@ func SearchAnime(q string, httpclient HTTPClient) (AnimeDetails, error) {
 	envPath := filepath.Join(rootDir, ".env")
 	errEnv := godotenv.Load(envPath)
 	if errEnv != nil {
-		fmt.Printf("Failed to load environment variables from %s: %s\n", envPath, errEnv)
-		return
+		return AnimeDetails{}, fmt.Errorf("failed to load environment variables from %s: %s", envPath, errEnv)
 	}
 
 	jixenURL := os.Getenv("JIKAN_BASE_URL")
