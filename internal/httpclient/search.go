@@ -13,7 +13,18 @@ import (
 )
 
 type AnimeDetails struct {
-	title string
+	Title    string
+	MalID    int
+	Image    string
+	Synopsis string
+}
+
+type AnimeSearchResults struct {
+	Pagination struct {
+		Count int
+		Total int
+	}
+	Data []AnimeDetails
 }
 
 type HTTPClient interface {
@@ -150,9 +161,9 @@ type JixenAnimeSearchBody struct {
 }
 
 // takes in a query string and searches for animes with the Jixen open API
-func SearchAnime(q string, httpclient HTTPClient) (AnimeDetails, error) {
+func SearchAnime(q string, httpclient HTTPClient) (AnimeSearchResults, error) {
 	if len(q) < 3 {
-		return AnimeDetails{}, fmt.Errorf("search should be more than 3 characters")
+		return AnimeSearchResults{}, fmt.Errorf("search should be more than 3 characters")
 	}
 
 	// put in util
@@ -164,29 +175,41 @@ func SearchAnime(q string, httpclient HTTPClient) (AnimeDetails, error) {
 		rootPath := re.Find([]byte(cwd))
 		errEnv := godotenv.Load(string(rootPath) + "/.env")
 		if errEnv != nil {
-			return AnimeDetails{}, fmt.Errorf("failed to load environment variables: %s", errEnv)
+			return AnimeSearchResults{}, fmt.Errorf("failed to load environment variables: %s", errEnv)
 		}
 		jixenURL = os.Getenv("JIKAN_BASE_URL")
 	}
 
-	resp, err := httpclient.Get(jixenURL + "anime?q=" + q)
+	resp, err := httpclient.Get(jixenURL + "anime?q=" + q + "?limit=10")
 	if err != nil {
-		return AnimeDetails{}, fmt.Errorf("error connecting to http client %s", err)
+		return AnimeSearchResults{}, fmt.Errorf("error connecting to http client %s", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return AnimeDetails{}, fmt.Errorf("error reading request body %s", err)
+		return AnimeSearchResults{}, fmt.Errorf("error reading request body %s", err)
 	}
 
 	var result JixenAnimeSearchBody
 	if err := json.Unmarshal(body, &result); err != nil {
-		return AnimeDetails{}, fmt.Errorf("error unmarshaling json %s", err)
+		return AnimeSearchResults{}, fmt.Errorf("error unmarshaling json %s", err)
 	}
 
-	output := AnimeDetails{
-		title: result.Data[0].TitleEnglish,
+	var output AnimeSearchResults
+
+	output.Pagination.Count = result.Pagination.Items.Count
+	output.Pagination.Total = result.Pagination.Items.Total
+
+	for _, element := range result.Data {
+		result := AnimeDetails{
+			MalID:    element.MalID,
+			Image:    element.Images.Webp.ImageURL,
+			Title:    element.Title,
+			Synopsis: element.Synopsis,
+		}
+
+		output.Data = append(output.Data, result)
 	}
 
 	return output, nil
