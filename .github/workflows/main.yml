@@ -3,7 +3,7 @@ name: Go CI
 on:
   push:
     branches:
-      - main
+      - "**"
   pull_request:
     branches:
       - main
@@ -12,6 +12,8 @@ jobs:
   build:
     name: Test
     runs-on: ubuntu-latest
+
+
 
     steps:
       - name: Set up Go 1.x
@@ -23,6 +25,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run tests
+        env:
+          JIKEN_BASE_URL: ${{ secrets.JIKEN_BASE_URL }}
         run: go test -v ./...
 
   golangci:
@@ -41,4 +45,3 @@ jobs:
           # When `install-mode` is `binary` (default) the value can be v1.2 or v1.2.3 or `latest` to use the latest version.
           # When `install-mode` is `goinstall` the value can be v1.2.3, `latest`, or the hash of a commit.
           version: v1.54
-

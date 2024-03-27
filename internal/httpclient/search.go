@@ -156,15 +156,18 @@ func SearchAnime(q string, httpclient HTTPClient) (AnimeDetails, error) {
 	}
 
 	// put in util
-	re := regexp.MustCompile(`^(.*` + "hisoka" + `)`)
-	cwd, _ := os.Getwd()
-	rootPath := re.Find([]byte(cwd))
-	errEnv := godotenv.Load(string(rootPath) + "/.env")
-	if errEnv != nil {
-		return AnimeDetails{}, fmt.Errorf("failed to load environment variables: %s", errEnv)
-	}
-
 	jixenURL := os.Getenv("JIKAN_BASE_URL")
+
+	if jixenURL == "" {
+		re := regexp.MustCompile(`^(.*?hisoka)`)
+		cwd, _ := os.Getwd()
+		rootPath := re.Find([]byte(cwd))
+		errEnv := godotenv.Load(string(rootPath) + "/.env")
+		if errEnv != nil {
+			return AnimeDetails{}, fmt.Errorf("failed to load environment variables: %s", errEnv)
+		}
+		jixenURL = os.Getenv("JIKAN_BASE_URL")
+	}
 
 	resp, err := httpclient.Get(jixenURL + "anime?q=" + q)
 	if err != nil {
