@@ -8,5 +8,11 @@ deps:
 lint:
 	golangci-lint run
 
+fmtfix:
+	gofmt --w .
+
 dev:
 	go run cmd/main.go
+
+test:
+	@go test ./..
