@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"hisoka/internal/httpclient"
-	"log"
 	"net/http"
 )
 
@@ -17,9 +16,16 @@ func Listen() {
 	}
 }
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+}
+
 func getSearchResults(w http.ResponseWriter, r *http.Request) {
 	taskCompleted := make(chan bool)
-	fmt.Printf("got / request\n")
+	enableCors(&w)
+	fmt.Printf("got /q request\n")
 	var test httpclient.AnimeSearchResults
 
 	searchTerm := r.FormValue("q")
@@ -28,7 +34,8 @@ func getSearchResults(w http.ResponseWriter, r *http.Request) {
 		var err error
 		test, err = httpclient.SearchAnime(searchTerm, &httpclient.RealHTTPClient{})
 		if err != nil {
-			log.Fatalln(err)
+
+			http.Error(w, `Error searching for anime + $err`, http.StatusInternalServerError)
 		}
 
 		// Signal that the task has completed by sending true to the channel
@@ -42,6 +49,6 @@ func getSearchResults(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	_, err := w.Write(jsonResp)
 	if err != nil {
-		log.Fatalln(err)
+		http.Error(w, "Error writng to output ", http.StatusInternalServerError)
 	}
 }
