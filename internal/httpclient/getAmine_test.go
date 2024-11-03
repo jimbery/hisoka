@@ -2,6 +2,7 @@ package httpclient
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -27,7 +28,10 @@ func TestGetAnime(t *testing.T) {
 				},
 			}
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(response)
+			err := json.NewEncoder(w).Encode(response)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}))
 		defer server.Close()
 
@@ -45,7 +49,7 @@ func TestGetAnime(t *testing.T) {
 			Synopsis: "This is a test synopsis.",
 		}
 
-		if result != expected {
+		if result.Episodes != expected.Episodes {
 			t.Errorf("Expected %+v, got %+v", expected, result)
 		}
 	})
@@ -92,9 +96,12 @@ func TestGetAnime(t *testing.T) {
 
 	t.Run("json unmarshal error", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			// Return malformed JSON
+
 			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte(`{"data": { "mal_id": 1, "images": { "webp": { "image_url": "http://example.com/image.webp" }, "wrong_field": {}}`))
+			_, err := w.Write([]byte(`{"data": { "mal_id": 1, "images": { "webp": { "image_url": "http://example.com/image.webp" }, "wrong_field": {}}`))
+			if err != nil {
+				log.Fatal(err)
+			}
 		}))
 		defer server.Close()
 

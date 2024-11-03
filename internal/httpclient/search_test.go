@@ -2,6 +2,7 @@ package httpclient
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -83,7 +84,10 @@ func TestSearchAnime(t *testing.T) {
 			}
 
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(response)
+			err := json.NewEncoder(w).Encode(response)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}))
 		defer server.Close()
 

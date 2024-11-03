@@ -11,10 +11,27 @@ import (
 )
 
 type AnimeDetailsFull struct {
-	Title    string
-	MalID    int
-	Image    string
-	Synopsis string
+	Title     string
+	MalID     int
+	Image     string
+	Synopsis  string
+	Year      int
+	Episodes  int
+	Rating    string
+	Trailer   string
+	Genres    []GenreInfo
+	Streaming []Streaming
+}
+
+type GenreInfo struct {
+	Type string
+	Name string
+	URL  string
+}
+
+type SteamingOutput struct {
+	Name string
+	URL  string
 }
 
 type GetAnimeResponse struct {
@@ -215,11 +232,29 @@ func GetAnime(MalID int) (AnimeDetailsFull, error) {
 		return AnimeDetailsFull{}, fmt.Errorf("error unmarshaling JSON: %w", err)
 	}
 
+	genres := []GenreInfo{}
+
+	for _, g := range result.Data.Genres {
+		gen := GenreInfo{
+			Name: g.Name,
+		}
+		genres = append(genres, gen)
+	}
+
+	streaming := []Streaming{}
+	streaming = append(streaming, result.Data.Streaming...)
+
 	output := AnimeDetailsFull{
-		MalID:    result.Data.MalID,
-		Image:    result.Data.Images.Webp.ImageURL,
-		Title:    result.Data.Title,
-		Synopsis: result.Data.Synopsis,
+		MalID:     result.Data.MalID,
+		Image:     result.Data.Images.Jpg.LargeImageURL,
+		Title:     result.Data.Title,
+		Synopsis:  result.Data.Synopsis,
+		Year:      result.Data.Year,
+		Episodes:  result.Data.Episodes,
+		Rating:    result.Data.Rating,
+		Genres:    genres,
+		Streaming: streaming,
+		Trailer:   result.Data.Trailer.EmbedURL,
 	}
 
 	return output, nil

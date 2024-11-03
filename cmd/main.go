@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"hisoka/internal/httpserver"
+	"log"
 
 	"github.com/joho/godotenv"
 )
@@ -10,7 +10,8 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Errorf("failed to load environment variables: %s", err)
+		log.Fatal(err)
+		return
 	}
 
 	httpserver.Listen()
