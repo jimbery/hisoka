@@ -6,10 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"regexp"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 type AnimeDetails struct {
@@ -161,7 +158,7 @@ type JixenAnimeSearchBody struct {
 }
 
 // takes in a query string and searches for animes with the Jixen open API
-func SearchAnime(q string, httpclient HTTPClient) (AnimeSearchResults, error) {
+func SearchAnime(q string) (AnimeSearchResults, error) {
 	if len(q) < 3 {
 		return AnimeSearchResults{}, fmt.Errorf("search should be more than 3 characters")
 	}
@@ -170,17 +167,10 @@ func SearchAnime(q string, httpclient HTTPClient) (AnimeSearchResults, error) {
 	jixenURL := os.Getenv("JIKAN_BASE_URL")
 
 	if jixenURL == "" {
-		re := regexp.MustCompile(`^(.*?hisoka)`)
-		cwd, _ := os.Getwd()
-		rootPath := re.Find([]byte(cwd))
-		errEnv := godotenv.Load(string(rootPath) + "/.env")
-		if errEnv != nil {
-			return AnimeSearchResults{}, fmt.Errorf("failed to load environment variables: %s", errEnv)
-		}
-		jixenURL = os.Getenv("JIKAN_BASE_URL")
+		return AnimeSearchResults{}, fmt.Errorf("failed to load environment variables: %s", jixenURL)
 	}
 
-	resp, err := httpclient.Get(jixenURL + "anime?q=" + q + "?limit=10")
+	resp, err := http.Get(jixenURL + "anime?q=" + q + "?limit=10")
 	if err != nil {
 		return AnimeSearchResults{}, fmt.Errorf("error connecting to http client %s", err)
 	}
