@@ -12,7 +12,7 @@ fmtfix:
 	gofmt --w .
 
 dev:
-	go run cmd/main.go
+	go run cmd/main.go --local
 
 test:
 	go test ./...
