@@ -14,8 +14,14 @@ import (
 var limiter = rate.NewLimiter(0.5, 5) // Limit to 2 requests per second with a burst of 5
 
 func Listen() {
+	// Handle specific routes
 	http.Handle("/search", rateLimit(http.HandlerFunc(getSearchResults)))
 	http.Handle("/anime/", rateLimit(http.HandlerFunc(getAnime)))
+
+	// Catch all unknown paths and return 404
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.NotFound(w, r) // Returns a 404 status code
+	})
 
 	fmt.Println("Server is listening on port 3333...")
 	err := http.ListenAndServe(":3333", nil)
