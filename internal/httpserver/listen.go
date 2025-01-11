@@ -99,9 +99,9 @@ func getAnime(w http.ResponseWriter, r *http.Request) {
 	// Split the path by slashes
 	parts := strings.Split(path, "/")
 
-	// Check if there's a second part
-	if len(parts) > 2 {
-		MalIDString := parts[2] // parts[0] is empty because of the leading slash
+	// Check if there's a third part
+	if len(parts) > 3 {
+		MalIDString := parts[3] // parts[0] is empty because of the leading slash
 
 		MalID, err := strconv.Atoi(MalIDString)
 		if err != nil {
