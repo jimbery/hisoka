@@ -22,6 +22,8 @@ func Listen() {
 		// Write an HTTP 200 OK status
 		w.WriteHeader(http.StatusOK)
 
+		fmt.Println("received health check")
+
 		// Send a response body
 		_, err := w.Write([]byte("OK"))
 		if err != nil {
