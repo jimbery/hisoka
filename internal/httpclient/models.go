@@ -12,7 +12,7 @@ type AnimeDetailsFull struct {
 	Rating    string
 	Trailer   string
 	Genres    []GenreInfo
-	Streaming []Streaming
+	Streaming []SteamingOutput
 }
 
 type GenreInfo struct {

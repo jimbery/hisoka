@@ -46,8 +46,11 @@ func GetAnime(MalID int) (AnimeDetailsFull, error) {
 		genres = append(genres, gen)
 	}
 
-	streaming := []Streaming{}
-	streaming = append(streaming, result.Data.Streaming...)
+	streaming := []SteamingOutput{}
+	for _, s := range result.Data.Streaming {
+		stream := SteamingOutput(s)
+		streaming = append(streaming, stream)
+	}
 
 	output := AnimeDetailsFull{
 		MalID:     result.Data.MalID,
