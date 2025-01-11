@@ -140,7 +140,7 @@ func TestSearchAnime(t *testing.T) {
 		os.Setenv("JIKAN_BASE_URL", server.URL+"/")
 
 		_, err := SearchAnime("naruto")
-		if err == nil { // Define a regex for matching error patterns if necessary
+		if err == nil {
 			t.Fatalf("Expected an HTTP error, got: %v", err)
 		}
 	})
