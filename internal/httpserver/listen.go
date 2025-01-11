@@ -17,8 +17,8 @@ func Listen() {
 	// Handle specific routes
 
 	fmt.Printf("hi")
-	http.Handle("/search", rateLimit(http.HandlerFunc(getSearchResults)))
-	http.Handle("/anime/", rateLimit(http.HandlerFunc(getAnime)))
+	http.Handle("/api/search", rateLimit(http.HandlerFunc(getSearchResults)))
+	http.Handle("/api/anime/", rateLimit(http.HandlerFunc(getAnime)))
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		// Write an HTTP 200 OK status
