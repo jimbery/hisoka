@@ -2,7 +2,6 @@ package httpclient
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,7 +12,7 @@ import (
 func GetAnime(MalID int) (AnimeDetailsFull, error) {
 	jikanURL := os.Getenv("JIKAN_BASE_URL")
 	if jikanURL == "" {
-		return AnimeDetailsFull{}, errors.New("JIKAN_BASE_URL environment variable is not set")
+		return AnimeDetailsFull{}, fmt.Errorf("JIKAN_BASE_URL environment variable is not set")
 	}
 
 	MalIDString := strconv.Itoa(MalID)
