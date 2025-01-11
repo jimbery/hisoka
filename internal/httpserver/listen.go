@@ -15,6 +15,8 @@ var limiter = rate.NewLimiter(0.5, 5) // Limit to 2 requests per second with a b
 
 func Listen() {
 	// Handle specific routes
+
+	fmt.Printf("hi")
 	http.Handle("/search", rateLimit(http.HandlerFunc(getSearchResults)))
 	http.Handle("/anime/", rateLimit(http.HandlerFunc(getAnime)))
 
