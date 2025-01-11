@@ -19,18 +19,19 @@ The **Dub vs Sub** backend is a RESTful API built in Go, powering the Dub vs Sub
 To install and run this backend locally:
 
 **Clone the repository:**
-   ```bash
-   git clone https://github.com/jimbery/hisoka.git
-  ```
+```bash
+git clone https://github.com/jimbery/hisoka.git
+```
 
-    Navigate to the project directory:
+Navigate to the project directory:
 
-   ```bash
+```bash
 cd hisoka
 ```
+
 Install dependencies: Ensure you have Go installed. Then, download dependencies:
 
-   ```bash
+```bash
 go mod tidy
 ```
 
