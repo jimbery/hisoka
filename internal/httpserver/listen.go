@@ -18,6 +18,17 @@ func Listen() {
 	http.Handle("/search", rateLimit(http.HandlerFunc(getSearchResults)))
 	http.Handle("/anime/", rateLimit(http.HandlerFunc(getAnime)))
 
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		// Write an HTTP 200 OK status
+		w.WriteHeader(http.StatusOK)
+
+		// Send a response body
+		_, err := w.Write([]byte("OK"))
+		if err != nil {
+			http.Error(w, "Error writing to output", http.StatusInternalServerError)
+		}
+	})
+
 	// Catch all unknown paths and return 404
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r) // Returns a 404 status code
