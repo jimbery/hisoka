@@ -29,11 +29,6 @@ func Listen() {
 		}
 	})
 
-	// Catch all unknown paths and return 404
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.NotFound(w, r) // Returns a 404 status code
-	})
-
 	fmt.Println("Server is listening on port 3333...")
 	err := http.ListenAndServe(":3333", nil)
 	if err != nil {
