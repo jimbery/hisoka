@@ -39,12 +39,11 @@ Set up environment variables: Create a .env file in the root of the project with
 
 ## Run the server:
 
+```bash
+make dev
+```
 
-    ```bash
-    make dev
-
-    The server will run on http://localhost:3333.
-    ```
+The server will run on http://localhost:3333.
 
 ## Folder Structure
 
