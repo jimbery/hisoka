@@ -34,7 +34,7 @@ jobs:
         id: migrate_up
         run: |
           export DB_URL="${{ secrets.DB_URI}}"
-          migrate -path ./migrations -database $DB_URL up
+          migrate -path ./internal/storage/migrations -database $DB_URL up
 
       - name: Run tests
         env:
@@ -47,5 +47,5 @@ jobs:
         if: failure()
         run: |
           export DB_URL="${{ secrets.DB_URI}}"
-          migrate -path ./migrations -database $DB_URL down
+          migrate -path ./internal/storage/migrations -database $DB_URL down
         continue-on-error: true
