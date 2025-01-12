@@ -47,5 +47,5 @@ jobs:
         if: failure()
         run: |
           export DB_URL="${{ secrets.DB_URI}}"
-          migrate -path ./migrations -database $DB_URL down
+          migrate -path ./internal/storage/migrations -database $DB_URL down
         continue-on-error: true
