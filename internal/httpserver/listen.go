@@ -13,7 +13,8 @@ func Listen() {
 	// Handle specific routes
 	http.Handle("/api/search", rateLimit(http.HandlerFunc(getSearchResults)))
 	http.Handle("/api/anime/", rateLimit(http.HandlerFunc(getAnime)))
-	http.Handle("/api/add_vote", rateLimit(http.HandlerFunc(addVote)))
+	http.Handle("/api/add-vote", rateLimit(http.HandlerFunc(addVote)))
+	http.Handle("/api/anime-vote-data/", rateLimit(http.HandlerFunc(getAnimeVoteData)))
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		// Write an HTTP 200 OK status
