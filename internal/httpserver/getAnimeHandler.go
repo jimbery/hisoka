@@ -10,8 +10,7 @@ import (
 )
 
 func getAnime(w http.ResponseWriter, r *http.Request) {
-	enableCors(w) // Enable CORS at the start
-
+	enableCors(w, r) // Enable CORS at the start
 	fmt.Printf("Received /anime request\n")
 
 	// Get the URL path

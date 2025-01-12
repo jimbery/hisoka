@@ -8,6 +8,7 @@ import (
 )
 
 func addVote(w http.ResponseWriter, r *http.Request) {
+	enableCors(w, r) // Enable CORS at the start
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
