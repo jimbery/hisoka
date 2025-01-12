@@ -13,8 +13,6 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
 
-
-
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
@@ -24,10 +22,35 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      # Set up PostgreSQL with Docker
+      - name: Set up PostgreSQL container
+        run: |
+          docker run --name postgres-db -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} -e POSTGRES_USER=${{ secrets.DB_USER }} -e POSTGRES_DB=${{ secrets.DB_NAME }} -p 5432:5432 -d postgres:13
+          # Wait for the database to be ready
+          until docker exec postgres-db pg_isready -U ${{ secrets.DB_USER }}; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 1
+          done
+
+      - name: Run database migrations (up)
+        id: migrate_up
+        run: |
+          export DB_URL="postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}?sslmode=disable"
+          migrate -path ./migrations -database $DB_URL up
+
       - name: Run tests
         env:
           JIKEN_BASE_URL: ${{ secrets.JIKEN_BASE_URL }}
+          DB_URL: ${{ secrets.DB_URL }}
         run: go test -v ./...
+
+      # Run database migrations (down) on failure
+      - name: Run database migrations (down) on failure
+        if: failure()
+        run: |
+          export DB_URL="postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@localhost:5432/${{ secrets.DB_NAME }}?sslmode=disable"
+          migrate -path ./migrations -database $DB_URL down
+        continue-on-error: true
 
   golangci:
     name: lint
@@ -41,7 +64,4 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v4
         with:
-          # Require: The version of golangci-lint to use.
-          # When `install-mode` is `binary` (default) the value can be v1.2 or v1.2.3 or `latest` to use the latest version.
-          # When `install-mode` is `goinstall` the value can be v1.2.3, `latest`, or the hash of a commit.
           version: v1.54

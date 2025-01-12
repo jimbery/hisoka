@@ -1,0 +1,45 @@
+name: Post-Merge Migration and Tests
+
+on:
+  push:
+    branches:
+      - main  # This only triggers after a successful merge into the main branch
+
+jobs:
+  migrate_and_test:
+    name: Database Migration and Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      # Set up PostgreSQL with Docker
+      - name: Set up PostgreSQL container
+        run: |
+          docker run --name postgres-db -e POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }} -e POSTGRES_USER=${{ secrets.DB_USER }} -e POSTGRES_DB=${{ secrets.DB_NAME }} -p 25060:25060 -d postgres:13
+          # Wait for the database to be ready
+          until docker exec postgres-db pg_isready -U ${{ secrets.DB_USER }}; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 1
+          done
+
+      - name: Run database migrations (up)
+        id: migrate_up
+        run: |
+          export DB_URL="${{ secrets.DB_URI}}"
+          migrate -path ./migrations -database $DB_URL up
+
+      - name: Run tests
+        env:
+          JIKEN_BASE_URL: ${{ secrets.JIKEN_BASE_URL }}
+          DB_URL: ${{ secrets.DB_URL }}
+        run: go test -v ./...
+
+      # Run database migrations (down) if tests fail
+      - name: Run database migrations (down) on failure
+        if: failure()
+        run: |
+          export DB_URL="${{ secrets.DB_URI}}"
+          migrate -path ./migrations -database $DB_URL down
+        continue-on-error: true
