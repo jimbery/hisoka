@@ -8,7 +8,7 @@ import (
 )
 
 func getSearchResults(w http.ResponseWriter, r *http.Request) {
-	enableCors(w) // Enable CORS at the start
+	enableCors(w, r) // Enable CORS at the start
 
 	fmt.Printf("Received /search request\n")
 
