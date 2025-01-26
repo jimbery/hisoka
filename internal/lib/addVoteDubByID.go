@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func AddVoteSubByMalID(malID int) (*storage.AnimeVoteData, error) {
+func AddVoteDubByID(id int) (*storage.AnimeVoteData, error) {
 	dbx, _ := storage.NewDBStore()
 
 	defer func() {
@@ -14,7 +14,7 @@ func AddVoteSubByMalID(malID int) (*storage.AnimeVoteData, error) {
 		}
 	}()
 
-	animeVoteData, err := dbx.GetAnimeVoteDataByMalID(malID)
+	animeVoteData, err := dbx.GetAnimeVoteDataByMalID(id)
 	if err != nil {
 		log.Println("error getting GetAnimeVoteDataByMalId", err)
 		return nil, err
@@ -26,13 +26,13 @@ func AddVoteSubByMalID(malID int) (*storage.AnimeVoteData, error) {
 		return nil, err
 	}
 
-	err = dbx.AddVoteSubByID(animeVoteData.ID)
+	err = dbx.AddVoteDubByID(animeVoteData.ID)
 	if err != nil {
 		log.Println("error adding AddVoteSubById", err)
 		return nil, err
 	}
 
-	animeVoteDataOutput, err := dbx.GetAnimeVoteDataByMalID(malID)
+	animeVoteDataOutput, err := dbx.GetAnimeVoteDataByMalID(id)
 	if err != nil {
 		log.Println("error getting GetAnimeVoteDataByMalId", err)
 		return nil, err
