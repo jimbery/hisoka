@@ -89,27 +89,13 @@ func TestInsertNewAnime(t *testing.T) {
 	_, err := dbx.InsertNewAnime(malID, name, dubVote, subVote)
 	require.NoError(t, err)
 
-	res, err := testDB.Query("SELECT mal_id, name, dub_vote, sub_vote FROM anime WHERE mal_id = 1")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer res.Close()
+	voteData, err := dbx.GetAnimeVoteDataByMalID(malID)
+	require.NoError(t, err)
 
-	for res.Next() {
-		var malIDres int
-		var nameRes string
-		var dubVoteRes int
-		var subVoteRes int
-
-		if err := res.Scan(&malIDres, &nameRes, &dubVoteRes, &subVoteRes); err != nil {
-			log.Fatal(err)
-		}
-
-		assert.Equal(t, malIDres, malID, "mal_id is incorrect in db")
-		assert.Equal(t, nameRes, name, "name is inconnect in db")
-		assert.Equal(t, dubVoteRes, dubVote, "dub_vote is incorrect in db")
-		assert.Equal(t, subVoteRes, subVote, "sub_vote is incorrect in db")
-	}
+	assert.Equal(t, malID, voteData.MalID, "mal_id is incorrect in db")
+	assert.Equal(t, name, voteData.Name, "name is inconnect in db")
+	assert.Equal(t, dubVote, voteData.DubVote, "dub_vote is incorrect in db")
+	assert.Equal(t, subVote, voteData.SubVote, "sub_vote is incorrect in db")
 
 }
 
