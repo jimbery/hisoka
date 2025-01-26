@@ -24,7 +24,7 @@ jobs:
       - name: Run tests
         env:
           JIKEN_BASE_URL: ${{ secrets.JIKEN_BASE_URL }}
-        run: go test -v ./...
+        run: make test
 
   golangci:
     name: lint
