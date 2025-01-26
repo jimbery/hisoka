@@ -6,15 +6,7 @@ import (
 	"log"
 )
 
-func AddAnimeIfNotExists(malID int) (id *int, err error) {
-	dbx, _ := storage.NewDBStore()
-
-	defer func() {
-		if err := dbx.Close(); err != nil {
-			log.Fatal("Failed to close the database:", err)
-		}
-	}()
-
+func AddAnimeIfNotExists(dbx *storage.Service, malID int) (id *int, err error) {
 	animeVoteData, err := dbx.GetAnimeVoteDataByMalID(malID)
 	if err != nil {
 		log.Println("error getting GetAnimeVoteDataByMalId", err)
