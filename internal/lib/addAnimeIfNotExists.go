@@ -25,7 +25,9 @@ func AddAnimeIfNotExists(dbx *storage.Service, malID int) (id *int, err error) {
 			log.Println("error InsertNewAnime", err)
 			return nil, err
 		}
+
+		return id, nil
 	}
 
-	return id, nil
+	return &animeVoteData.ID, nil
 }
