@@ -21,5 +21,10 @@ test:
 	# Set a trap to clean up the Docker container if the script exits
 	trap 'docker stop test-postgres; docker rm test-postgres' EXIT
 
+	until docker exec test-postgres pg_isready -U postgres; do
+	  echo "Waiting for PostgreSQL to be ready..."
+	  sleep 1
+	done
+
 	# Run the Go tests
 	go test ./...
