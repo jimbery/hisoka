@@ -54,7 +54,7 @@ func (s *Service) GetAnimeVoteDataByID(id int) (anime *AnimeVoteData, err error)
 	err = s.DB.QueryRow(`
 		SELECT id, name, dub_vote, sub_vote, mal_id, created_at, updated_at
 		FROM anime
-		WHERE mal_id = $1
+		WHERE id = $1
 	`, id).Scan(
 		&anime.ID,
 		&anime.Name,
