@@ -8,9 +8,9 @@ import (
 )
 
 func getSearchResults(w http.ResponseWriter, r *http.Request) {
-	enableCors(w, r) // Enable CORS at the start
+	enableCors(w, r)
 
-	fmt.Printf("Received /search request\n")
+	fmt.Println("Received /search request")
 
 	searchTerm := r.FormValue("q")
 	if searchTerm == "" {
@@ -18,7 +18,6 @@ func getSearchResults(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Call the search function directly, without a goroutine
 	results, err := httpclient.SearchAnime(searchTerm)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error searching for anime: %v", err), http.StatusInternalServerError)

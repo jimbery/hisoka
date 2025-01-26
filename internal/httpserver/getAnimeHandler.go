@@ -10,18 +10,15 @@ import (
 )
 
 func getAnime(w http.ResponseWriter, r *http.Request) {
-	enableCors(w, r) // Enable CORS at the start
-	fmt.Printf("Received /anime request\n")
+	enableCors(w, r)
+	fmt.Println("Received /anime request")
 
-	// Get the URL path
 	path := r.URL.Path
 
-	// Split the path by slashes
 	parts := strings.Split(path, "/")
 
-	// Check if there's a third part
 	if len(parts) > 3 {
-		MalIDString := parts[3] // parts[0] is empty because of the leading slash
+		MalIDString := parts[3]
 
 		MalID, err := strconv.Atoi(MalIDString)
 		if err != nil {
@@ -29,7 +26,6 @@ func getAnime(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Call the search function directly, without a goroutine
 		results, err := httpclient.GetAnime(MalID)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Error searching for anime: %v", err), http.StatusInternalServerError)

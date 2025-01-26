@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"encoding/json"
+	"fmt"
 	"hisoka/internal/lib"
 	"hisoka/internal/storage"
 	"log"
@@ -9,8 +10,10 @@ import (
 )
 
 func addVote(w http.ResponseWriter, r *http.Request, dbx *storage.Service) {
-	enableCors(w, r) // Enable CORS at the start
-	if r.Method != http.MethodPost {
+	enableCors(w, r)
+	fmt.Println("Received /add-vote request")
+
+	if r.Method != http.MethodPut {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
