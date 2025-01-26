@@ -23,7 +23,7 @@ func addVote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Ensure the anime exists
-	err = lib.AddAnimeIfNotExists(input.MalID)
+	id, err := lib.AddAnimeIfNotExists(input.MalID)
 	if err != nil {
 		http.Error(w, "Failed to add anime", http.StatusBadRequest)
 		log.Println("Error adding anime:", err)
@@ -35,9 +35,9 @@ func addVote(w http.ResponseWriter, r *http.Request) {
 	var animeVoteDataOutput interface{}
 	switch input.VoteType {
 	case DubVote:
-		animeVoteDataOutput, err = lib.AddVoteDubByMalID(input.MalID)
+		animeVoteDataOutput, err = lib.AddVoteDubByID(*id)
 	case SubVote:
-		animeVoteDataOutput, err = lib.AddVoteSubByMalID(input.MalID)
+		animeVoteDataOutput, err = lib.AddVoteSubByID(*id)
 	default:
 		http.Error(w, "Invalid vote type", http.StatusBadRequest)
 		return
