@@ -3,11 +3,12 @@ package httpserver
 import (
 	"encoding/json"
 	"hisoka/internal/lib"
+	"hisoka/internal/storage"
 	"log"
 	"net/http"
 )
 
-func addVote(w http.ResponseWriter, r *http.Request) {
+func addVote(w http.ResponseWriter, r *http.Request, dbx *storage.Service) {
 	enableCors(w, r) // Enable CORS at the start
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -23,7 +24,7 @@ func addVote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Ensure the anime exists
-	id, err := lib.AddAnimeIfNotExists(input.MalID)
+	id, err := lib.AddAnimeIfNotExists(dbx, input.MalID)
 	if err != nil {
 		http.Error(w, "Failed to add anime", http.StatusBadRequest)
 		log.Println("Error adding anime:", err)
@@ -35,9 +36,9 @@ func addVote(w http.ResponseWriter, r *http.Request) {
 	var animeVoteDataOutput interface{}
 	switch input.VoteType {
 	case DubVote:
-		animeVoteDataOutput, err = lib.AddVoteDubByID(*id)
+		animeVoteDataOutput, err = lib.AddVoteDubByID(dbx, *id)
 	case SubVote:
-		animeVoteDataOutput, err = lib.AddVoteSubByID(*id)
+		animeVoteDataOutput, err = lib.AddVoteSubByID(dbx, *id)
 	default:
 		http.Error(w, "Invalid vote type", http.StatusBadRequest)
 		return

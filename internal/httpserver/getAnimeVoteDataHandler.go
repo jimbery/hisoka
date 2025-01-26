@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"hisoka/internal/lib"
+	"hisoka/internal/storage"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-func getAnimeVoteData(w http.ResponseWriter, r *http.Request) {
+func getAnimeVoteData(w http.ResponseWriter, r *http.Request, dbx *storage.Service) {
 	enableCors(w, r) // Enable CORS at the start
 	fmt.Printf("Received /anime request\n")
 
@@ -29,7 +30,7 @@ func getAnimeVoteData(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		results, err := lib.GetAnimnVoteDataByMalID(MalID)
+		results, err := lib.GetAnimnVoteDataByMalID(dbx, MalID)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Error searching for anime: %v", err), http.StatusNotFound)
 			return

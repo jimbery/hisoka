@@ -5,15 +5,7 @@ import (
 	"log"
 )
 
-func AddVoteSubByID(id int) (*storage.AnimeVoteData, error) {
-	dbx, _ := storage.NewDBStore()
-
-	defer func() {
-		if err := dbx.Close(); err != nil {
-			log.Fatal("Failed to close the database:", err)
-		}
-	}()
-
+func AddVoteSubByID(dbx *storage.Service, id int) (*storage.AnimeVoteData, error) {
 	animeVoteData, err := dbx.GetAnimeVoteDataByMalID(id)
 	if err != nil {
 		log.Println("error getting GetAnimeVoteDataByMalId", err)

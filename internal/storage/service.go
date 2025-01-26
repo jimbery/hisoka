@@ -2,9 +2,9 @@ package storage
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 type Service struct {
@@ -13,10 +13,20 @@ type Service struct {
 
 func NewDBStore() (*Service, error) {
 	connStr := os.Getenv("db")
-	fmt.Println(connStr)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to open database connection:", err)
+		return nil, err
+	}
+
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(2 * time.Minute)
+
+	err = db.Ping()
+	if err != nil {
+		log.Fatal("Failed to ping the database:", err)
+		return nil, err
 	}
 
 	return &Service{DB: db}, nil
