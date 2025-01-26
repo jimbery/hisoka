@@ -12,15 +12,12 @@ import (
 
 func getAnimeVoteData(w http.ResponseWriter, r *http.Request, dbx *storage.Service) {
 	enableCors(w, r) // Enable CORS at the start
-	fmt.Printf("Received /anime request\n")
+	fmt.Println("Received /anime-vote-data request")
 
-	// Get the URL path
 	path := r.URL.Path
 
-	// Split the path by slashes
 	parts := strings.Split(path, "/")
 
-	// Check if there's a third part
 	if len(parts) > 3 {
 		MalIDString := parts[3]
 
