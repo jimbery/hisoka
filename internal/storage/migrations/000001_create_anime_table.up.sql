@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS anime (
     id SERIAL PRIMARY KEY,
-    mal_id INT,
+    mal_id INT UNIQUE,
     name VARCHAR(255),
     dub_vote INT,
     sub_vote INT,
