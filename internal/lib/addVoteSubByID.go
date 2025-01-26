@@ -6,7 +6,7 @@ import (
 )
 
 func AddVoteSubByID(dbx *storage.Service, id int) (*storage.AnimeVoteData, error) {
-	animeVoteData, err := dbx.GetAnimeVoteDataByMalID(id)
+	animeVoteData, err := dbx.GetAnimeVoteDataByID(id)
 	if err != nil {
 		log.Println("error getting GetAnimeVoteDataByMalId", err)
 		return nil, err
@@ -24,7 +24,7 @@ func AddVoteSubByID(dbx *storage.Service, id int) (*storage.AnimeVoteData, error
 		return nil, err
 	}
 
-	animeVoteDataOutput, err := dbx.GetAnimeVoteDataByMalID(id)
+	animeVoteDataOutput, err := dbx.GetAnimeVoteDataByID(id)
 	if err != nil {
 		log.Println("error getting GetAnimeVoteDataByMalId", err)
 		return nil, err
