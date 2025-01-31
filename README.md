@@ -1,5 +1,5 @@
 # hisoka
-https://hisoka-ldubl.ondigitalocean.app/
+https://dubvssub.com/
 
 # Dub vs Sub - Backend (Go)
 
