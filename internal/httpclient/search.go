@@ -30,7 +30,7 @@ func SearchAnime(q string) (AnimeSearchResults, error) {
 		return AnimeSearchResults{}, fmt.Errorf("failed to load environment variables: %s", jixenURL)
 	}
 
-	resp, err := http.Get(jixenURL + "anime?q=" + q + "?limit=10")
+	resp, err := http.Get(jixenURL + "anime?q=" + q + "&limit=20&order_by=popularity")
 	if err != nil {
 		return AnimeSearchResults{}, fmt.Errorf("error connecting to http client %s", err)
 	}
