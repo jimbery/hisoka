@@ -18,7 +18,6 @@ func (c *RealHTTPClient) Get(url string) (*http.Response, error) {
 	return http.Get(url)
 }
 
-// takes in a query string and searches for animes with the Jixen open API
 func SearchAnime(q string) (AnimeSearchResults, error) {
 	if len(q) < 3 {
 		return AnimeSearchResults{}, fmt.Errorf("search should be more than 3 characters")

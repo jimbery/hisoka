@@ -16,8 +16,8 @@ func (s *Service) InsertNewAnime(malID int, name string, dubVote int, subVote in
 	`, name, dubVote, subVote, malID).Scan(&id)
 
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		log.Println("inserting new anime into anime db", err)
+		return nil, fmt.Errorf("inserting new anime into anime db %s", err)
 	}
 	return id, nil
 }
@@ -42,7 +42,7 @@ func (s *Service) GetAnimeVoteDataByMalID(malID int) (anime *AnimeVoteData, err 
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("error fetching anime vote data: %v", err)
+		return nil, fmt.Errorf("getting anime vote data by malID %v", err)
 	}
 
 	return anime, nil
@@ -68,7 +68,7 @@ func (s *Service) GetAnimeVoteDataByID(id int) (anime *AnimeVoteData, err error)
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("error fetching anime vote data: %v", err)
+		return nil, fmt.Errorf("getting anime vote data: %v", err)
 	}
 
 	return anime, nil
@@ -81,12 +81,12 @@ func (s *Service) AddVoteSubByID(id int) error {
 		WHERE id = $1
 	`, id)
 	if err != nil {
-		return fmt.Errorf("error updating anime dub vote data: %v", err)
+		return fmt.Errorf("updating anime sub vote data: %v", err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("error checking rows affected: %v", err)
+		return fmt.Errorf("checking rows affected: %v", err)
 	}
 
 	if rowsAffected == 0 {
@@ -103,12 +103,12 @@ func (s *Service) AddVoteDubByID(id int) error {
 		WHERE id = $1
 	`, id)
 	if err != nil {
-		return fmt.Errorf("error updating anime dub vote data: %v", err)
+		return fmt.Errorf("updating anime dub vote data: %v", err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("error checking rows affected: %v", err)
+		return fmt.Errorf("checking rows affected: %v", err)
 	}
 
 	if rowsAffected == 0 {
@@ -123,7 +123,7 @@ func (s *Service) AddVoteDubByID(id int) error {
 func (s *Service) DeleteAnimeByMalID(malID int) error {
 	_, err := s.DB.Exec("DELETE from anime WHERE mal_id = $1", malID)
 	if err != nil {
-		return fmt.Errorf("error updating deleting anime: %v", err)
+		return fmt.Errorf("updating deleting anime: %v", err)
 	}
 
 	return nil
